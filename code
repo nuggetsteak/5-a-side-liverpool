@@ -1,0 +1,171 @@
+selected = {}
+budget = 100 # in millions
+goalkeepers = {"Alisson": 15, "Mamardashvili": 10}
+defenders = {"Van Dijk": 25, "Konate": 20, "Guehi": 15, "Frimpong": 20}
+midfielders = {"Szoboszlai": 20, "Macallister": 20, "Gravenberch": 25, "Wirtz": 30}
+attackers = {"Rio": 15, "Chiesa": 20, "Ekitike": 25, "Salah": 30}
+
+
+print("Welcome to Liverpool 5-a-side team!\nStart playing? (yes/no)")
+proceed = input().strip().lower()
+if proceed != "yes":
+    raise SystemExit
+
+
+print(f"Budget: ${budget} million")
+proceed = input("Choose a goalkeeper (yes/no): ").strip().lower() # lower - change input to lowercase
+# input - placeholder for input
+
+if proceed != "yes":
+    print("Thank you, bye.") 
+    raise SystemExit 
+# auto exit
+
+# GK - Goalkeeper
+print("Remaining budget:", f"${budget} million")
+print("Choose 1 goalkeeper:")
+print("Write 'cancel' to go back to main menu.")
+for name, price in goalkeepers.items():
+    print(f"- {name}: ${price}M")
+
+while True:
+    choice = input("Your choice: ").strip().title() # title - formalize and match to dictionary
+    if choice in goalkeepers:
+        break # correct value - end
+    if choice.lower() == "cancel": #Cancel, cAncel -> cancel
+        print ("You can try again. Back to the main menu.")
+        break
+    print("Invalid choice. Try again.") # wrong value - loop
+
+price = goalkeepers[choice] # take value from choice (key)
+if price > budget:
+    print(f"Not enough budget for {choice}. Need ${price}M.")
+    print(f"Remaining budget: ${budget}M")
+    raise SystemExit
+
+budget -= price # budget - price
+selected["GK"] = (choice, price)
+print(f"{choice} has been selected. Remaining budget: ${budget}M.")
+choice = input("Do you want to continue? (yes/no): ").strip().lower()
+if choice != "yes":
+    print("Back to the main menu.")
+    raise SystemExit
+
+# DF - Defenders
+print(f"Remaining budget: ${budget}M")
+print("You can choose ONE defender.")
+print("Write 'cancel' to return to main menu.")
+for name, value in defenders.items():
+    print(f"- {name}: ${value}M")
+
+while True:
+    choice = input("Your defender is: ").strip().title()
+
+    if choice.lower() == "cancel":
+        print("Back to the main menu.")
+        raise SystemExit
+    
+    if choice not in defenders:
+        print("Invalid choice. Try again.")
+        continue
+
+    price = defenders[choice]
+    if price > budget:
+        print(f"Not enough budget for {choice}. Need ${price}M.")
+        print(f"Remaining budget: ${budget}M")
+        continue
+
+    budget -= price
+    selected["DF"] = (choice, price)
+    print(f"{choice} has been selected. Remaining budget: ${budget}M")
+    break
+
+proceed = input(f"Do you want to continue (yes/no)?: ").strip().lower()
+if proceed != "yes":
+    print("Back to the main menu.")
+    raise SystemExit
+
+# Summary so far
+print("Current team:")
+for position, (player_name, player_value) in selected.items():
+    print(f"{position} - {player_name}, ${player_value}M")
+print(f"Remaining budget: ${budget}M")
+
+# MF - Midfielders 
+print("Choose two midfielders.")
+print("Write 'cancel' to return to main menu.")
+for name, value in midfielders.items():
+    print(f"- {name}: ${value}M")
+
+for i in range(1, 3):
+    while True:
+        choice = input("Your midfielder is: ").strip().title()
+
+        if choice.lower() == "cancel": # not continuing
+            print("Back to the main menu.")
+            raise SystemExit
+
+        if choice not in midfielders: # not in the list
+            print("Invalid option. Try again.")
+            continue
+    
+        if choice in selected.values(): # prevent same key twice
+            print(f"{choice} is already selected. Pick a different midfielder.")
+            continue
+
+        price = midfielders[choice]
+        if price > budget:
+            print(f"Not enough budget for {choice}. Need ${price}M.")
+            print(f"Remaining budget: ${budget}M")
+            continue
+    
+        budget -= price
+        selected[f"MF{i}"] = (choice, price)
+        print(f"{choice} has been selected. Remaining budget: ${budget}M")
+        break
+
+# Summary so far
+print("Current team:")
+for position, (player_name, player_value) in selected.items():
+    print(f"{position} - {player_name}, ${player_value}M")
+print(f"Remaining budget: ${budget}M")
+
+# FW - forwards
+print("Choose an attacker:")
+print("Write 'cancel' to return to main menu.")
+for name, value in attackers.items():
+    print(f"- {name}: ${value}M")
+
+while True:
+    choice = input("Your attacker is: ").strip().title()
+
+    if choice.lower() == "cancel": # cancel whole operation
+        print("Return to the main menu.")
+        raise SystemExit
+    
+    if choice not in attackers: # wrong input
+        print("Invalid option. Try again.")
+        continue
+
+    price = attackers[choice]
+    if price > budget: # overpriced player
+        print(f"Not enough budget for {choice}. Need ${price}M.")
+        print(f"Remaining budget: ${budget}M.")
+        continue
+    
+    budget -= price 
+    selected["FW"] = (choice, price) # correct input
+    print(f"{choice} has been selected. Remaining budget: ${budget}M")
+    break
+proceed = input("Do you want to continue (yes/no)?: ").strip().lower()
+if proceed != "yes":
+    print("Back to the main menu.")
+    raise SystemExit
+
+# Summary so far
+print("Here is your team!")
+for position, (player_name, player_value) in selected.items():
+    print(f"{position} - {player_name}, ${player_value}M")
+print(f"Remaining budget: ${budget}M")
+proceed = input("Type anything for new team.").strip().lower()
+print("Starting new team...")
